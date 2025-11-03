@@ -10,8 +10,8 @@ This repo is part of my **3-Month DevSecOps Journey - Month 2**.
 ### 🔄 Week 5 – IaC Basics
 
 * [x] Install Terraform/Ansible and configure CLI
-* [ ] Write Terraform script for a simple VM
-* [ ] Add storage bucket in Terraform
+* [x] Write Terraform script for a simple VM
+* [x] Add storage bucket in Terraform
 * [ ] Test local deployment (or cloud free tier)
 * [ ] Learn modules and variables in Terraform
 * [ ] Refactor code using modules
