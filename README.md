@@ -12,9 +12,9 @@ This repo is part of my **3-Month DevSecOps Journey - Month 2**.
 * [x] Install Terraform/Ansible and configure CLI
 * [x] Write Terraform script for a simple VM
 * [x] Add storage bucket in Terraform
-* [ ] Test local deployment (or cloud free tier)
-* [ ] Learn modules and variables in Terraform
-* [ ] Refactor code using modules
+* [x] Test local deployment (or cloud free tier)
+* [x] Learn modules and variables in Terraform
+* [x] Refactor code using modules
 * [ ] Document IaC project
 
 ---

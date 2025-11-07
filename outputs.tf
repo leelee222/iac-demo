@@ -1,7 +1,14 @@
 output "bucket_name" {
-  value = aws_s3_bucket.iac_demo_bucket.bucket
+  description = "Name of the S3 bucket"
+  value       = module.s3_bucket.bucket_name
 }
 
 output "instance_id" {
-  value = aws_instance.iac_demo_instance.id
+  description = "ID of the EC2 instance"
+  value       = module.ec2_instance.instance_id
+}
+
+output "security_group_id" {
+  description = "ID of the security group"
+  value       = module.security_group.sg_id
 }

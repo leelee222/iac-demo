@@ -11,30 +11,20 @@ terraform {
   }
 }
 
-# ------------------------
-# S3 Bucket (Storage)
-# ------------------------
-resource "aws_s3_bucket" "iac_demo_bucket" {
-  bucket = "iac-demo-bucket-local-${random_id.bucket_id.hex}"
-
-  tags = {
-    Name        = "iac-demo-bucket"
-    Environment = "local"
-  }
+module "security_group" {
+  source  = "./modules/security_group"
+  sg_name = "iac-demo-sg"
 }
 
-# Random suffix so bucket names are unique
-resource "random_id" "bucket_id" {
-  byte_length = 4
+module "ec2_instance" {
+  source         = "./modules/ec2"
+  instance_name  = "iac-demo-instance"
+  instance_type  = var.instance_type
+  sg_id          = module.security_group.sg_id
 }
 
-# ------------------------
-# Fake EC2 Instance (for testing)
-# ------------------------
-resource "aws_instance" "iac_demo_instance" {
-  ami           = "ami-12345678"   # Dummy ID for LocalStack
-  instance_type = "t2.micro"
-  tags = {
-    Name = "iac-demo-instance"
-  }
+module "s3_bucket" {
+  source        = "./modules/s3_bucket"
+  bucket_prefix = var.bucket_prefix
+  environment   = "local"
 }
