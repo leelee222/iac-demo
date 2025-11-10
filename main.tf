@@ -12,8 +12,9 @@ terraform {
 }
 
 module "security_group" {
-  source  = "./modules/security_group"
-  sg_name = "iac-demo-sg"
+  source           = "./modules/security_group"
+  sg_name          = "iac-demo-sg"
+  allowed_ssh_cidr = var.allowed_ssh_cidr
 }
 
 module "ec2_instance" {
