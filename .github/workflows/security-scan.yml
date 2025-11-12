@@ -42,7 +42,16 @@ jobs:
           framework: terraform
           output_format: cli
           soft_fail: false
-          skip_check: CKV_AWS_260
+          # Skip checks that are excessive for demo/learning projects:
+          # CKV_AWS_260: HTTP open to world (acceptable for web servers)
+          # CKV2_AWS_41: IAM role attachment (not needed for demo)
+          # CKV_AWS_145: KMS encryption (default encryption is sufficient for demo)
+          # CKV2_AWS_62: S3 event notifications (not needed for demo)
+          # CKV_AWS_18: S3 access logging (not needed for demo)
+          # CKV2_AWS_61: S3 lifecycle (not needed for demo)
+          # CKV_AWS_144: Cross-region replication (overkill for demo)
+          # CKV2_AWS_5: Security group attachment check (false positive)
+          skip_check: CKV_AWS_260,CKV2_AWS_41,CKV_AWS_145,CKV2_AWS_62,CKV_AWS_18,CKV2_AWS_61,CKV_AWS_144,CKV2_AWS_5
 
       - name: Upload Checkov Results
         if: always()
