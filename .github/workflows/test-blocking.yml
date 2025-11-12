@@ -1,0 +1,81 @@
+name: Test Security Pipeline Blocking
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-insecure-code:
+    name: Test Pipeline Blocking with Insecure Code
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Insecure Test File
+        run: |
+          cat > test-insecure.tf << 'EOF'
+          # This is intentionally insecure code to test pipeline blocking
+          
+          resource "aws_security_group" "insecure_test" {
+            name        = "insecure-test-sg"
+            description = "Intentionally insecure for testing"
+          
+            # CRITICAL: SSH open to world (should fail)
+            ingress {
+              from_port   = 22
+              to_port     = 22
+              protocol    = "tcp"
+              cidr_blocks = ["0.0.0.0/0"]
+            }
+          
+            # CRITICAL: All ports open (should fail)
+            ingress {
+              from_port   = 0
+              to_port     = 65535
+              protocol    = "tcp"
+              cidr_blocks = ["0.0.0.0/0"]
+            }
+          }
+          
+          resource "aws_s3_bucket" "insecure_bucket" {
+            bucket = "insecure-test-bucket"
+            # Missing encryption
+            # Missing versioning
+            # Missing logging
+          }
+          
+          resource "aws_instance" "insecure_instance" {
+            ami           = "ami-12345678"
+            instance_type = "t2.micro"
+            
+            # No encryption
+            # No monitoring
+            # IMDSv1 enabled
+          }
+          EOF
+
+      - name: Run Checkov on Insecure Code
+        id: checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          file: test-insecure.tf
+          framework: terraform
+          soft_fail: false
+        continue-on-error: true
+
+      - name: Verify Pipeline Blocked
+        run: |
+          if [[ "${{ steps.checkov.outcome }}" == "failure" ]]; then
+            echo "✅ SUCCESS: Pipeline correctly BLOCKED insecure code!"
+            echo "🛡️  Security checks are working as expected."
+            exit 0
+          else
+            echo "❌ FAILURE: Pipeline did NOT block insecure code!"
+            echo "⚠️  Security checks may not be configured correctly."
+            exit 1
+          fi
+
+      - name: Cleanup Test File
+        if: always()
+        run: rm -f test-insecure.tf

@@ -24,8 +24,8 @@ This repo is part of my **3-Month DevSecOps Journey - Month 2**.
 * [x] Install Checkov or Terraform Sentinel
 * [x] Run security scans on IaC scripts
 * [x] Fix detected misconfigurations (e.g., public buckets)
-* [ ] Automate IaC scans in CI/CD pipeline
-* [ ] Test pipeline blocking insecure IaC deployments
+* [x] Automate IaC scans in CI/CD pipeline
+* [x] Test pipeline blocking insecure IaC deployments
 * [ ] Push code to GitHub
 * [ ] Document IaC security workflow
 
