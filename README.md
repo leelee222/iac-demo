@@ -26,7 +26,7 @@ This repo is part of my **3-Month DevSecOps Journey - Month 2**.
 * [x] Fix detected misconfigurations (e.g., public buckets)
 * [x] Automate IaC scans in CI/CD pipeline
 * [x] Test pipeline blocking insecure IaC deployments
-* [ ] Push code to GitHub
+* [x] Push code to GitHub
 * [ ] Document IaC security workflow
 
 ---
