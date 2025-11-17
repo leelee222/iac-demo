@@ -1,12 +1,4 @@
-variable "instance_type" {
-  type    = string
-  default = "t2.micro"
+output "instance_id" {
+  value = aws_instance.vm.id
 }
 
-variable "instance_name" {
-  type    = string
-}
-
-variable "sg_id" {
-  type = string
-}
