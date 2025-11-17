@@ -69,9 +69,9 @@ resource "aws_iam_role_policy" "s3_read_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject",           # Download files ✅
-          "s3:ListBucket",          # List files in bucket ✅
-          "s3:GetBucketLocation"    # Check bucket region ✅
+          "s3:GetObject",           # Download files
+          "s3:ListBucket",          # List files in bucket
+          "s3:GetBucketLocation"    # Check bucket region
           # NOTE: NO PutObject, DeleteObject, etc. (read-only!)
         ]
         Resource = [

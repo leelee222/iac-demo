@@ -10,6 +10,12 @@ variable "instance_name" {
   default     = "iac-demo-instance"
 }
 
+variable "subnet_id" {
+  description = "Subnet ID to launch the instance in"
+  type        = string
+  default     = null
+}
+
 variable "sg_id" {
   description = "Security group ID to attach to the instance"
   type        = string

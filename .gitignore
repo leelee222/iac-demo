@@ -36,3 +36,5 @@ terraform.rc
 # OS files
 .DS_Store
 Thumbs.db
+
+JUNIOR-DEVSECOPS-GUIDE.md

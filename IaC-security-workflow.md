@@ -1,10 +1,10 @@
-# 🛡️ IaC Security Workflow Documentation
+# IaC Security Workflow Documentation
 
 Complete guide to the Infrastructure as Code security implementation in this project.
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 1. [Overview](#overview)
 2. [Security Tools](#security-tools)
@@ -18,19 +18,19 @@ Complete guide to the Infrastructure as Code security implementation in this pro
 
 ---
 
-## 🎯 Overview
+## Overview
 
-This project implements a comprehensive IaC security workflow using **Checkov** for automated security scanning. The workflow includes:
+This project implements a comprehensive IaC security workflow using Checkov for automated security scanning. The workflow includes:
 
-- ✅ Pre-commit local security scans
-- ✅ Automated CI/CD security checks
-- ✅ Pipeline blocking on critical security issues
-- ✅ Detailed security reports
-- ✅ Fixed security misconfigurations
+- Pre-commit local security scans
+- Automated CI/CD security checks
+- Pipeline blocking on critical security issues
+- Detailed security reports
+- Fixed security misconfigurations
 
 ---
 
-## 🔧 Security Tools
+## Security Tools
 
 ### Checkov
 **Version**: 3.2.490  
@@ -51,15 +51,16 @@ checkov --version
 
 ---
 
-## 🔍 Security Checks Implemented
+## Security Checks Implemented
 
 ### Critical Security Fixes
 
-#### 1. **EC2 Instance Security** ✅
-- ✅ **IMDSv2 Enforcement**: Prevents SSRF attacks
-- ✅ **Root Volume Encryption**: Data protection at rest
-- ✅ **Detailed Monitoring**: Enhanced visibility
-- ✅ **EBS Optimization**: Better performance and security
+#### 1. EC2 Instance Security
+
+- IMDSv2 Enforcement: Prevents SSRF attacks
+- Root Volume Encryption: Data protection at rest
+- Detailed Monitoring: Enhanced visibility
+- EBS Optimization: Better performance and security
 
 ```hcl
 # Enforce IMDSv2
@@ -77,11 +78,11 @@ root_block_device {
 }
 ```
 
-#### 2. **Security Group Hardening** ✅
-- ✅ **Restricted SSH Access**: Only from specific IPs
-- ✅ **Rule Descriptions**: Clear documentation
-- ✅ **Egress Restrictions**: Limited outbound traffic
-- ✅ **Principle of Least Privilege**: Minimal necessary access
+#### 2. Security Group Hardening
+
+- Rule Descriptions: Clear documentation
+- Egress Restrictions: Limited outbound traffic
+- Principle of Least Privilege: Minimal necessary access
 
 ```hcl
 # SSH restricted to specific IP
@@ -103,10 +104,11 @@ egress {
 }
 ```
 
-#### 3. **S3 Bucket Security** ✅
-- ✅ **Public Access Block**: Prevents accidental public exposure
-- ✅ **Versioning Enabled**: Data recovery and audit trail
-- ✅ **Private by Default**: No public access
+#### 3. S3 Bucket Security
+
+- Public Access Block: Prevents accidental public exposure
+- Versioning Enabled: Data recovery and audit trail
+- Private by Default: No public access
 
 ```hcl
 # Block public access
@@ -130,7 +132,7 @@ resource "aws_s3_bucket_versioning" "bucket_versioning" {
 
 ---
 
-## 🔄 CI/CD Pipeline
+## CI/CD Pipeline
 
 ### GitHub Actions Workflow
 
@@ -238,7 +240,7 @@ chmod +x .git/hooks/pre-commit
 
 ---
 
-## 🔧 Security Fixes Applied
+## Security Fixes Applied
 
 ### Timeline of Fixes
 
@@ -247,21 +249,21 @@ chmod +x .git/hooks/pre-commit
 **Results**: 8 failed checks, 6 passed
 
 **Critical Issues Found**:
-- 🔴 SSH open to world (0.0.0.0/0)
-- 🔴 EC2 using IMDSv1 (vulnerable to SSRF)
-- 🔴 Root volume not encrypted
-- 🟡 No detailed monitoring
-- 🟡 HTTP open to world
-- 🟡 Unrestricted egress
+- CRITICAL: SSH open to world (0.0.0.0/0)
+- CRITICAL: EC2 using IMDSv1 (vulnerable to SSRF)
+- CRITICAL: Root volume not encrypted
+- MEDIUM: No detailed monitoring
+- MEDIUM: HTTP open to world
+- MEDIUM: Unrestricted egress
 
 #### Phase 2: Critical Fixes
 **Date**: Week 6, Day 2  
 **Fixes Applied**:
-- ✅ Restricted SSH to specific IP range
-- ✅ Enforced IMDSv2 on EC2 instances
-- ✅ Enabled root volume encryption
-- ✅ Enabled detailed monitoring
-- ✅ Added rule descriptions
+- Restricted SSH to specific IP range
+- Enforced IMDSv2 on EC2 instances
+- Enabled root volume encryption
+- Enabled detailed monitoring
+- Added rule descriptions
 
 **Results**: 13 passed, 1 failed (HTTP - acceptable)
 
@@ -276,7 +278,7 @@ chmod +x .git/hooks/pre-commit
 
 ---
 
-## 📊 Pipeline Workflow
+## Pipeline Workflow
 
 ### Successful Pipeline Flow
 
@@ -393,7 +395,7 @@ git push origin test-insecure-config
 
 ---
 
-## ✅ Best Practices
+## Best Practices
 
 ### 1. **Always Run Local Scans First**
 ```bash

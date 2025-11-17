@@ -20,5 +20,31 @@ output "iam_role_name" {
 
 output "iam_role_arn" {
   description = "ARN of the IAM role"
-  value       = module.iam.role_arn
+  value = module.iam.role_arn
+}
+
+# VPC Outputs
+output "vpc_id" {
+  description = "ID of the VPC"
+  value       = module.vpc.vpc_id
+}
+
+output "public_subnet_id" {
+  description = "ID of the public subnet"
+  value       = module.vpc.public_subnet_id
+}
+
+output "private_subnet_id" {
+  description = "ID of the private subnet"
+  value       = module.vpc.private_subnet_id
+}
+
+output "nat_gateway_ip" {
+  description = "Public IP of the NAT Gateway"
+  value       = module.vpc.nat_gateway_public_ip
+}
+
+output "flow_logs_log_group" {
+  description = "CloudWatch log group for VPC flow logs"
+  value       = module.vpc.flow_logs_log_group
 }

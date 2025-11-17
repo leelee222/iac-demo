@@ -1,6 +1,7 @@
 resource "aws_security_group" "sg" {
   name        = var.sg_name
   description = "Security group with restricted access for SSH and HTTP"
+  vpc_id      = var.vpc_id  # Attach to VPC for network isolation
 
   # SSH restricted to specific CIDR ranges (configure via variable)
   ingress {

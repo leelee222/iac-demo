@@ -1,15 +1,15 @@
-# 🏗️ Infrastructure as Code (IaC) Demo
+# Infrastructure as Code (IaC) Demo
 
-A hands-on project to learn **Infrastructure as Code** and **Cloud Security** using Terraform, security scanning tools, and cloud deployments.
-This repo is part of my **3-Month DevSecOps Journey - Month 2**.
+A hands-on project to learn Infrastructure as Code and Cloud Security using Terraform, security scanning tools, and cloud deployments.
+This repository is part of my 3-Month DevSecOps Journey - Month 2.
 
-> **Note**: Using **LocalStack** for AWS simulation as AWS account signup is pending approval. All concepts and practices remain the same and can be deployed to real AWS/GCP/Azure later.
+**Note**: Using LocalStack for AWS simulation as AWS account signup is pending approval. All concepts and practices remain the same and can be deployed to real AWS/GCP/Azure later.
 
 ---
 
-## 📅 Roadmap Progress
+## Roadmap Progress
 
-### 🔄 Week 5 – IaC Basics
+### Week 5 - IaC Basics
 
 * [x] Install Terraform/Ansible and configure CLI
 * [x] Write Terraform script for a simple VM
@@ -33,12 +33,12 @@ This repo is part of my **3-Month DevSecOps Journey - Month 2**.
 
 ---
 
-### Week 7 – Cloud Security Basics (LocalStack Edition)
+### Week 7 - Cloud Security Basics (LocalStack Edition)
 
-> **Using LocalStack** for local AWS simulation (AWS account approval pending)
+**Using LocalStack** for local AWS simulation (AWS account approval pending)
 
 * [x] Set up IAM roles and policies (LocalStack)
-* [ ] Create VPC and network security
+* [x] Create VPC and network security
 * [ ] Deploy infrastructure with VPC isolation
 * [ ] Enable CloudWatch logging (simulated)
 * [ ] Test access restrictions & security groups
@@ -47,7 +47,7 @@ This repo is part of my **3-Month DevSecOps Journey - Month 2**.
 
 ---
 
-### Week 8 – Cloud Deployment Project
+### Week 8 - Cloud Deployment Project
 
 * [ ] Integrate CI/CD pipeline with cloud deployment
 * [ ] Automate Terraform apply in pipeline
@@ -60,7 +60,7 @@ This repo is part of my **3-Month DevSecOps Journey - Month 2**.
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 * **IaC Tool**: Terraform v5.100.0
 * **Provider**: AWS (via LocalStack for local testing)
@@ -70,11 +70,11 @@ This repo is part of my **3-Month DevSecOps Journey - Month 2**.
 * **Modules**: Custom modules for EC2, S3, Security Groups, IAM, VPC
 * **Logging & Monitoring**: CloudWatch (LocalStack simulated)
 
-> **Why LocalStack?** AWS account signup issues (phone verification). LocalStack provides a complete AWS cloud environment locally, allowing me to learn and practice all cloud security concepts without a real AWS account.
+**Why LocalStack?** AWS account signup issues (phone verification). LocalStack provides a complete AWS cloud environment locally, allowing me to learn and practice all cloud security concepts without a real AWS account.
 
 ---
 
-## 🛡️ Security Best Practices
+## Security Best Practices
 
 This project follows IaC security best practices:
 
@@ -87,6 +87,10 @@ This project follows IaC security best practices:
 - ✅ SSH access restricted to specific IP ranges (not 0.0.0.0/0)
 - ✅ Encryption enabled for storage (EBS encryption)
 - ✅ IMDSv2 enforced on EC2 instances
+- ✅ VPC network isolation (public/private subnets)
+- ✅ NAT Gateway for private subnet outbound access
+- ✅ Network ACLs for subnet-level firewall
+- ✅ VPC Flow Logs for traffic monitoring
 
 ### Code Security
 - ✅ IaC scripts scanned with **Checkov** for misconfigurations
@@ -95,14 +99,16 @@ This project follows IaC security best practices:
 - ✅ 100% security scan pass rate
 
 ### Cloud Security
-- ⏳ VPC network isolation (Week 7)
-- ⏳ IAM roles and policies (Week 7)
+- ✅ VPC network isolation (public/private subnets)
+- ✅ IAM roles and policies (least privilege)
+- ✅ VPC Flow Logs enabled
+- ✅ Network ACLs (subnet-level firewall)
+- ✅ NAT Gateway for secure private subnet access
 - ⏳ CloudWatch logging (Week 7)
-- ⏳ Network ACLs and security hardening (Week 7)
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 ```bash
@@ -172,7 +178,7 @@ allowed_ssh_cidr  = "YOUR_IP/32"  # Replace with your IP
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 iac-demo/
@@ -191,6 +197,14 @@ iac-demo/
 │       ├── security-scan.yml    # CI/CD security pipeline
 │       └── test-insecure.yml    # Pipeline blocking test
 └── modules/                     # Reusable Terraform modules
+    ├── vpc/                     # VPC module (NEW!)
+    │   ├── main.tf              # VPC, subnets, gateways, flow logs
+    │   ├── variables.tf         # Module inputs
+    │   └── outputs.tf           # Module outputs
+    ├── iam/                     # IAM module (NEW!)
+    │   ├── main.tf              # IAM roles and policies
+    │   ├── variables.tf         # Module inputs
+    │   └── outputs.tf           # Module outputs
     ├── ec2/                     # EC2 instance module
     │   ├── main.tf              # EC2 resource definition
     │   ├── variables.tf         # Module inputs
@@ -207,21 +221,54 @@ iac-demo/
 
 ---
 
-## 🏗️ Infrastructure Components
+## Infrastructure Components
 
 This project deploys the following infrastructure:
 
-### 1. **EC2 Instance Module** (`modules/ec2/`)
+### 1. VPC Module (`modules/vpc/`) - NEW
+
+- Creates isolated network with public and private subnets
+- **Components**:
+  - ✅ VPC with CIDR 10.0.0.0/16 (65,536 IPs)
+  - ✅ Public subnet (10.0.1.0/24) for internet-facing resources
+  - ✅ Private subnet (10.0.2.0/24) for internal resources
+  - ✅ Internet Gateway for public subnet
+  - ✅ NAT Gateway for private subnet outbound access
+  - ✅ Route tables for traffic routing
+  - ✅ Network ACL for subnet-level firewall
+  - ✅ VPC Flow Logs for traffic monitoring
+- **Security Benefits**:
+  - Network isolation from other AWS resources
+  - Private subnet has no direct internet access
+  - Defense in depth with NACL + Security Groups
+  - Traffic monitoring and logging
+
+### 2. IAM Module (`modules/iam/`) - NEW
+
+- Creates IAM roles and policies for EC2 instances
+- **Components**:
+  - ✅ IAM role with EC2 trust policy
+  - ✅ CloudWatch Logs policy (write logs only)
+  - ✅ S3 read-only policy (scoped to specific bucket)
+  - ✅ Instance profile for EC2 attachment
+- **Security Principles**:
+  - Principle of least privilege
+  - No hardcoded credentials
+  - Scoped permissions (only specific resources)
+
+### 3. EC2 Instance Module (`modules/ec2/`)
 - Creates a virtual machine with configurable instance type
 - **Security Features**:
   - ✅ IMDSv2 enforced (prevents SSRF attacks)
   - ✅ Root volume encryption enabled
   - ✅ Detailed monitoring enabled
   - ✅ EBS optimization enabled
+  - ✅ IAM role attached (no credentials needed)
+  - ✅ Deployed in VPC subnet
 - Attached to security group for network access control
 - Tagged with customizable names
 
-### 2. **S3 Bucket Module** (`modules/s3_bucket/`)
+### 4. S3 Bucket Module (`modules/s3_bucket/`)
 - Creates object storage with unique random suffix
 - **Security Features**:
   - ✅ Public access completely blocked
@@ -230,25 +277,31 @@ This project deploys the following infrastructure:
 - Environment tagging for resource organization
 - Follows naming best practices
 
-### 3. **Security Group Module** (`modules/security_group/`)
+### 5. Security Group Module (`modules/security_group/`)
 - Defines firewall rules for the EC2 instance
 - **Security Features**:
   - ✅ SSH restricted to specific IP ranges (not 0.0.0.0/0)
   - ✅ HTTP open for web traffic (acceptable for web servers)
   - ✅ Egress limited to HTTP/HTTPS/DNS only
   - ✅ All rules have descriptions
+  - ✅ Attached to VPC for network isolation
 - Configurable allowed IP ranges
 
 ### Module Dependencies
 ```
-security_group → ec2_instance
-     (sg_id)
+VPC → Security Group → EC2
+        ↓
+      (VPC subnet, sg_id)
+
+S3 Bucket → IAM → EC2
+             ↓
+       (bucket_name, instance_profile)
 ```
 The EC2 module depends on the Security Group module, demonstrating inter-module communication.
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Automated Testing
 Run the comprehensive test suite:
@@ -286,26 +339,43 @@ See [TESTING.md](TESTING.md) for detailed testing instructions including:
 
 ---
 
-## 📊 Current Infrastructure
+## Current Infrastructure
 
 After running `terraform apply`, the following resources are created:
 
 | Resource Type | Module | Name/ID | Purpose |
 |--------------|--------|---------|---------|
-| EC2 Instance | `ec2_instance` | `i-xxxxxxxxx` | Virtual machine (secured) |
+| **Networking (VPC)** | | | |
+| VPC | `vpc` | `vpc-xxxxxxxxx` | Isolated network (10.0.0.0/16) |
+| Public Subnet | `vpc` | `subnet-xxxxxxxxx` | Internet-facing resources (10.0.1.0/24) |
+| Private Subnet | `vpc` | `subnet-xxxxxxxxx` | Internal resources (10.0.2.0/24) |
+| Internet Gateway | `vpc` | `igw-xxxxxxxxx` | Public internet access |
+| NAT Gateway | `vpc` | `nat-xxxxxxxxx` | Private outbound access |
+| Elastic IP | `vpc` | `eip-xxxxxxxxx` | Static IP for NAT |
+| Route Tables | `vpc` | 2 tables | Traffic routing |
+| Route Table Associations | `vpc` | 2 associations | Link tables to subnets |
+| Network ACL | `vpc` | `acl-xxxxxxxxx` | Subnet-level firewall |
+| **IAM & Security** | | | |
+| IAM Role | `iam` | `iac-demo-ec2-role` | EC2 permissions |
+| IAM Policies | `iam` | 2 policies | CloudWatch + S3 access |
+| IAM Instance Profile | `iam` | `iac-demo-ec2-role-profile` | Attach role to EC2 |
+| IAM Flow Logs Role | `vpc` | `local-vpc-flow-logs-role` | VPC logging permissions |
+| IAM Flow Logs Policy | `vpc` | Inline policy | Define log permissions |
+| Security Group | `security_group` | `sg-xxxxxxxxx` | Instance firewall |
+| **Compute & Storage** | | | |
+| EC2 Instance | `ec2_instance` | `i-xxxxxxxxx` | Virtual machine (secured, with IAM) |
 | S3 Bucket | `s3_bucket` | `iac-demo-local-xxxxx` | Object storage (private) |
 | S3 Public Access Block | `s3_bucket` | Auto-generated | Prevents public access |
 | S3 Versioning | `s3_bucket` | Enabled | Data recovery |
-| Security Group | `security_group` | `sg-xxxxxxxxx` | Network security (restricted) |
 | Random ID | `s3_bucket` | Random suffix | Unique bucket naming |
 
-**Total Resources**: 6 (4 main + 2 security)
+**Total Resources**: 22 (13 VPC + 5 IAM + 4 Storage/Compute)
 
 ---
 
-## � Security Features
+## Security Features
 
-### Week 6 Achievements (✅ COMPLETE)
+### Week 6 Achievements (COMPLETE)
 
 #### Security Scanning
 - ✅ Checkov v3.2.490 installed and configured
@@ -337,21 +407,22 @@ After running `terraform apply`, the following resources are created:
 - Pipeline fails if security issues found
 - Documented security workflow
 
-**Security Scan Results**: ✅ **100% Pass Rate**
+**Security Scan Results**: 100% Pass Rate
 
 ---
 
-## 📝 Documentation
+## Documentation
 
 - [TESTING.md](TESTING.md) - Comprehensive testing guide
 - [SECURITY-WORKFLOW.md](SECURITY-WORKFLOW.md) - Security implementation details
+- [VPC-EXPLAINED.md](VPC-EXPLAINED.md) - VPC and network security deep dive (NEW)
 - [Terraform Documentation](https://www.terraform.io/docs)
 - [Checkov Documentation](https://www.checkov.io/)
 - [LocalStack Documentation](https://docs.localstack.cloud/)
 
 ---
 
-## 🎯 Learning Goals
+## Learning Goals
 
 - ✅ Master Infrastructure as Code with Terraform
 - ✅ Create reusable Terraform modules
@@ -361,17 +432,17 @@ After running `terraform apply`, the following resources are created:
 - ✅ Implement security scanning and policy enforcement
 - ✅ Fix security misconfigurations
 - ✅ Automate security in CI/CD pipeline
-- ⏳ Implement IAM roles and policies (Week 7)
-- ⏳ Create VPC and network security (Week 7)
+- ✅ Implement IAM roles and policies (Week 7)
+- ✅ Create VPC and network security (Week 7)
 - ⏳ Deploy secure cloud infrastructure (Week 7)
 - ⏳ Enable logging and monitoring (Week 7)
 - ⏳ Apply advanced cloud security (Week 7)
 
 ---
 
-## 🎓 What I Learned
+## What I Learned
 
-### Week 5 - IaC Basics (✅ COMPLETE)
+### Week 5 - IaC Basics (COMPLETE)
 
 **Module Architecture**
 - How to create reusable Terraform modules
@@ -391,7 +462,7 @@ After running `terraform apply`, the following resources are created:
 - Verifying state and outputs
 - LocalStack for local infrastructure testing
 
-### Week 6 - IaC Security (✅ COMPLETE)
+### Week 6 - IaC Security (COMPLETE)
 
 **Security Scanning**
 - Installing and configuring Checkov
@@ -421,19 +492,19 @@ After running `terraform apply`, the following resources are created:
 
 ---
 
-## 📈 Progress Tracking
+## Progress Tracking
 
-**Week 5 Status**: ✅ **COMPLETE** (7/7 tasks)  
-**Week 6 Status**: ✅ **COMPLETE** (7/7 tasks)  
-**Week 7 Status**: ⏳ **READY TO START** (0/7 tasks)
+**Week 5 Status**: COMPLETE (7/7 tasks)  
+**Week 6 Status**: COMPLETE (7/7 tasks)  
+**Week 7 Status**: IN PROGRESS (2/7 tasks)
 
-**Overall Progress**: 14/28 tasks complete (50%)
+**Overall Progress**: 16/28 tasks complete (57%)
 
-Ready to start **Week 7 - Cloud Security Basics** (using LocalStack)! 🚀
+Currently working on Week 7 - Cloud Security Basics (using LocalStack)
 
 ---
 
-## 🚀 Next Steps (Week 7)
+## Next Steps (Week 7)
 
 With LocalStack, we'll implement:
 
@@ -446,7 +517,7 @@ With LocalStack, we'll implement:
 
 ---
 
-## 💡 Why LocalStack?
+## Why LocalStack?
 
 **Current Situation**: AWS account signup pending (phone verification issues)
 

@@ -6,9 +6,9 @@ This project implements automated security scanning in the CI/CD pipeline using 
 
 ---
 
-## 🔄 Workflows
+## Workflows
 
-### 1. **IaC Security Scan** (`security-scan.yml`)
+### 1. IaC Security Scan (`security-scan.yml`)
 
 **Triggers:**
 - Push to `main` or `develop` branches
@@ -18,23 +18,23 @@ This project implements automated security scanning in the CI/CD pipeline using 
 **Jobs:**
 
 #### a) Terraform Security Scan
-- ✅ Checks Terraform formatting
-- ✅ Validates Terraform configuration
-- ✅ Runs Checkov security scan
-- ❌ **Fails pipeline if security issues found**
-- 📤 Uploads scan results as artifacts
+- Checks Terraform formatting
+- Validates Terraform configuration
+- Runs Checkov security scan
+- Fails pipeline if security issues found
+- Uploads scan results as artifacts
 
 #### b) Terraform Plan
-- 📋 Runs `terraform plan` to preview changes
-- ⏸️ Only runs if security scan passes
+- Runs `terraform plan` to preview changes
+- Only runs if security scan passes
 
 #### c) Pipeline Summary
-- 📊 Reports overall pipeline status
-- ❌ Blocks deployment if security issues exist
+- Reports overall pipeline status
+- Blocks deployment if security issues exist
 
 ---
 
-### 2. **Test Security Pipeline Blocking** (`test-blocking.yml`)
+### 2. Test Security Pipeline Blocking (`test-blocking.yml`)
 
 **Purpose:** Verify that the pipeline correctly blocks insecure code
 
@@ -55,7 +55,7 @@ This project implements automated security scanning in the CI/CD pipeline using 
 
 ---
 
-## 🛡️ Security Checks
+## Security Checks
 
 ### Checkov Policies Enforced
 

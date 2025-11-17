@@ -1,6 +1,7 @@
 resource "aws_instance" "vm" {
   ami                    = "ami-12345678"
   instance_type          = var.instance_type
+  subnet_id              = var.subnet_id  # Deploy in specific subnet
   vpc_security_group_ids = [var.sg_id]
   
   iam_instance_profile = var.iam_instance_profile
