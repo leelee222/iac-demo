@@ -56,7 +56,6 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 * [ ] Test security failures and pipeline blocking
 * [ ] Push final cloud deployment to GitHub
 * [ ] Document full cloud deployment workflow
-* [ ] (Optional) Deploy to real AWS/GCP/Azure if account approved
 
 ---
 
@@ -459,6 +458,7 @@ After running `terraform apply`, the following resources are created:
 - [SECURITY-WORKFLOW.md](SECURITY-WORKFLOW.md) - Security implementation details
 ## Documentation
 
+- [CLOUD-SECURITY-SETUP.md](CLOUD-SECURITY-SETUP.md) - Complete cloud security architecture documentation
 - [TESTING.md](TESTING.md) - Comprehensive testing guide
 - [JUNIOR-DEVSECOPS-GUIDE.md](JUNIOR-DEVSECOPS-GUIDE.md) - Beginner-friendly explanation of everything
 - [VPC-EXPLAINED.md](VPC-EXPLAINED.md) - VPC and network security deep dive
