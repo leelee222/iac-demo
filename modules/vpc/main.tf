@@ -1,7 +1,4 @@
-# VPC Module - Network Isolation and Security
-# This creates a complete network with public/private subnets, NAT, and routing
 
-# 1. VPC - Your own private cloud network
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -13,7 +10,6 @@ resource "aws_vpc" "main" {
   }
 }
 
-# 2. Internet Gateway - Allows public subnet to access internet
 resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
@@ -23,7 +19,6 @@ resource "aws_internet_gateway" "main" {
   }
 }
 
-# 3. Public Subnet - For resources that need internet access (like web servers)
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = var.public_subnet_cidr
@@ -37,7 +32,6 @@ resource "aws_subnet" "public" {
   }
 }
 
-# 4. Private Subnet - For resources that should NOT have direct internet access (like databases)
 resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.private_subnet_cidr
@@ -50,7 +44,6 @@ resource "aws_subnet" "private" {
   }
 }
 
-# 5. Elastic IP - Static IP for NAT Gateway
 resource "aws_eip" "nat" {
   domain = "vpc"
 
@@ -62,8 +55,6 @@ resource "aws_eip" "nat" {
   depends_on = [aws_internet_gateway.main]
 }
 
-# 6. NAT Gateway - Allows private subnet to access internet (one-way)
-# Private resources can download updates but internet cannot initiate connections to them
 resource "aws_nat_gateway" "main" {
   allocation_id = aws_eip.nat.id
   subnet_id     = aws_subnet.public.id
@@ -76,7 +67,6 @@ resource "aws_nat_gateway" "main" {
   depends_on = [aws_internet_gateway.main]
 }
 
-# 7. Public Route Table - Routes internet traffic through Internet Gateway
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
@@ -91,7 +81,6 @@ resource "aws_route_table" "public" {
   }
 }
 
-# 8. Private Route Table - Routes internet traffic through NAT Gateway
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.main.id
 
@@ -106,25 +95,20 @@ resource "aws_route_table" "private" {
   }
 }
 
-# 9. Associate public subnet with public route table
 resource "aws_route_table_association" "public" {
   subnet_id      = aws_subnet.public.id
   route_table_id = aws_route_table.public.id
 }
 
-# 10. Associate private subnet with private route table
 resource "aws_route_table_association" "private" {
   subnet_id      = aws_subnet.private.id
   route_table_id = aws_route_table.private.id
 }
 
-# 11. Network ACL for additional security layer
-# Acts as a firewall at the subnet level (in addition to security groups)
 resource "aws_network_acl" "main" {
   vpc_id     = aws_vpc.main.id
   subnet_ids = [aws_subnet.public.id, aws_subnet.private.id]
 
-  # Allow inbound HTTP
   ingress {
     protocol   = "tcp"
     rule_no    = 100
@@ -134,7 +118,6 @@ resource "aws_network_acl" "main" {
     to_port    = 80
   }
 
-  # Allow inbound HTTPS
   ingress {
     protocol   = "tcp"
     rule_no    = 110
@@ -144,7 +127,6 @@ resource "aws_network_acl" "main" {
     to_port    = 443
   }
 
-  # Allow inbound SSH from specific range
   ingress {
     protocol   = "tcp"
     rule_no    = 120
@@ -154,7 +136,6 @@ resource "aws_network_acl" "main" {
     to_port    = 22
   }
 
-  # Allow inbound ephemeral ports (for return traffic)
   ingress {
     protocol   = "tcp"
     rule_no    = 130
@@ -164,7 +145,6 @@ resource "aws_network_acl" "main" {
     to_port    = 65535
   }
 
-  # Allow all outbound traffic
   egress {
     protocol   = "-1"
     rule_no    = 100
@@ -180,7 +160,6 @@ resource "aws_network_acl" "main" {
   }
 }
 
-# 12. VPC Flow Logs - Monitor all network traffic (security monitoring)
 resource "aws_flow_log" "main" {
   vpc_id          = aws_vpc.main.id
   traffic_type    = "ALL"
@@ -193,7 +172,6 @@ resource "aws_flow_log" "main" {
   }
 }
 
-# 13. CloudWatch Log Group for VPC Flow Logs
 resource "aws_cloudwatch_log_group" "flow_logs" {
   name              = "/aws/vpc/${var.environment}-flow-logs"
   retention_in_days = 7
@@ -204,7 +182,6 @@ resource "aws_cloudwatch_log_group" "flow_logs" {
   }
 }
 
-# 14. IAM Role for VPC Flow Logs
 resource "aws_iam_role" "flow_logs" {
   name = "${var.environment}-vpc-flow-logs-role"
 
@@ -227,7 +204,6 @@ resource "aws_iam_role" "flow_logs" {
   }
 }
 
-# 15. IAM Policy for VPC Flow Logs
 resource "aws_iam_role_policy" "flow_logs" {
   name = "${var.environment}-vpc-flow-logs-policy"
   role = aws_iam_role.flow_logs.id

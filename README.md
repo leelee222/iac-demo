@@ -1,9 +1,9 @@
 # Infrastructure as Code (IaC) Demo
 
-A hands-on project to learn Infrastructure as Code and Cloud Security using Terraform, security scanning tools, and cloud deployments.
+A hands-on project to learn Infrastructure as Code and Cloud Security using Terraform, security scanning tools, and AWS cloud deployments.
 This repository is part of my 3-Month DevSecOps Journey - Month 2.
 
-**Note**: Using LocalStack for AWS simulation as AWS account signup is pending approval. All concepts and practices remain the same and can be deployed to real AWS/GCP/Azure later.
+**Status**: ✅ **DEPLOYED TO PRODUCTION AWS** - Full infrastructure running in real AWS with enterprise-grade security.
 
 ---
 
@@ -33,17 +33,17 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 
 ---
 
-### Week 7 - Cloud Security Basics (LocalStack Edition)
+### Week 7 - Cloud Security Basics (AWS Production)
 
-**Using LocalStack** for local AWS simulation (AWS account approval pending)
+**Deployed to Real AWS** with full production infrastructure
 
-* [x] Set up IAM roles and policies (LocalStack)
+* [x] Set up IAM roles and policies
 * [x] Create VPC and network security
-* [ ] Deploy infrastructure with VPC isolation
-* [ ] Enable CloudWatch logging (simulated)
-* [ ] Test access restrictions & security groups
-* [ ] Add advanced security hardening
-* [ ] Document cloud security setup
+* [x] Deploy infrastructure with VPC isolation
+* [x] Enable CloudWatch logging & VPC Flow Logs
+* [x] Configure security groups with IP restrictions
+* [x] Implement advanced security hardening
+* [x] Deploy to production AWS
 
 ---
 
@@ -63,14 +63,46 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 ## Tech Stack
 
 * **IaC Tool**: Terraform v5.100.0
-* **Provider**: AWS (via LocalStack for local testing)
-* **Local Testing**: LocalStack v4.10.1 (simulates AWS services)
+* **Provider**: AWS (Production Deployment)
+* **Cloud Platform**: Amazon Web Services (AWS Free Tier + Credits)
 * **Security Tools**: Checkov v3.2.490
 * **CI/CD**: GitHub Actions
 * **Modules**: Custom modules for EC2, S3, Security Groups, IAM, VPC
-* **Logging & Monitoring**: CloudWatch (LocalStack simulated)
+* **Logging & Monitoring**: CloudWatch Logs & VPC Flow Logs
+* **Instance Type**: t3.micro (Free Tier Eligible)
+* **Region**: us-east-1
 
-**Why LocalStack?** AWS account signup issues (phone verification). LocalStack provides a complete AWS cloud environment locally, allowing me to learn and practice all cloud security concepts without a real AWS account.
+**Status**: Deployed to production AWS with full enterprise security features.
+
+---
+
+## Production Infrastructure
+
+### Current Deployment (AWS)
+
+**25 Resources Deployed:**
+
+| Component | Resource ID | Status |
+|-----------|------------|--------|
+| **VPC** | `vpc-008c829789c18098b` | ✅ Running |
+| **Public Subnet** | `subnet-0e1696350a3592c7d` | ✅ Active |
+| **Private Subnet** | `subnet-0aeb4f9ba503f916c` | ✅ Active |
+| **EC2 Instance** | `i-000e170aaa531df35` | ✅ Running |
+| **Public IP** | `13.222.96.187` | ✅ Active |
+| **NAT Gateway** | `54.225.29.80` | ✅ Active |
+| **Security Group** | `sg-09e16ad00dfd00582` | ✅ Active |
+| **S3 Bucket** | `iac-demo-leelee222-local-5722280d` | ✅ Active |
+| **VPC Flow Logs** | `/aws/vpc/local-flow-logs` | ✅ Logging |
+| **IAM Role** | `iac-demo-ec2-role` | ✅ Active |
+
+**Instance Details:**
+- AMI: Amazon Linux 2023
+- Type: t3.micro (Free Tier)
+- Public IP: 13.222.96.187
+- Private IP: 10.0.1.235
+- Subnet: Public (10.0.1.0/24)
+
+**Cost**: ~$33/month (NAT Gateway only - all other resources are free tier eligible)
 
 ---
 
@@ -84,7 +116,7 @@ This project follows IaC security best practices:
 - ✅ S3 versioning enabled
 - ✅ IAM roles follow principle of least privilege
 - ✅ Security groups restrict access to necessary ports only
-- ✅ SSH access restricted to specific IP ranges (not 0.0.0.0/0)
+- ✅ SSH access restricted to specific IP (41.85.163.81/32)
 - ✅ Encryption enabled for storage (EBS encryption)
 - ✅ IMDSv2 enforced on EC2 instances
 - ✅ VPC network isolation (public/private subnets)
@@ -101,10 +133,11 @@ This project follows IaC security best practices:
 ### Cloud Security
 - ✅ VPC network isolation (public/private subnets)
 - ✅ IAM roles and policies (least privilege)
-- ✅ VPC Flow Logs enabled
+- ✅ VPC Flow Logs enabled (CloudWatch)
 - ✅ Network ACLs (subnet-level firewall)
 - ✅ NAT Gateway for secure private subnet access
-- ⏳ CloudWatch logging (Week 7)
+- ✅ CloudWatch logging enabled
+- ✅ Production AWS deployment complete
 
 ---
 
@@ -124,10 +157,12 @@ sudo mv terraform /usr/local/bin/
 # Verify installation
 terraform --version
 
-# Install LocalStack (for local AWS simulation)
-pip install localstack
-# or
-brew install localstack
+# Configure AWS CLI
+aws configure
+# Enter your AWS Access Key ID
+# Enter your AWS Secret Access Key
+# Default region: us-east-1
+# Default output format: json
 
 # Install Checkov (security scanning)
 pip install checkov
@@ -135,11 +170,11 @@ pip install checkov
 brew install checkov
 ```
 
-### Deploy Infrastructure
+### Deploy to AWS
 
 ```bash
-# 1. Start LocalStack (simulates AWS locally)
-localstack start -d
+# 1. Configure your IP for SSH access
+# Edit terraform.tfvars and set your IP address
 
 # 2. Initialize Terraform
 terraform init
@@ -147,34 +182,42 @@ terraform init
 # 3. Run security scan
 checkov -d . --compact
 
-# 4. Validate configuration
-terraform validate
-
-# 5. Plan deployment
+# 4. Preview deployment
 terraform plan
 
-# 6. Apply infrastructure
+# 5. Deploy infrastructure
 terraform apply
 
-# 7. View outputs
+# 6. View outputs
 terraform output
 
-# 8. Run automated tests
-bash test-infrastructure.sh
-
-# 9. Destroy infrastructure
+# 7. When done, destroy resources to save costs
 terraform destroy
 ```
+
+### Cost Management
+
+**NAT Gateway** is the only resource that costs money (~$32/month).
+All other resources are free tier eligible.
+
+**To minimize costs:**
+- Use infrastructure for learning (1-2 weeks)
+- Run `terraform destroy` when not in use
+- Redeploy anytime with `terraform apply`
+
+---
 
 ### Using Variables
 
 Create a `terraform.tfvars` file to customize:
 ```hcl
 aws_region        = "us-east-1"
-instance_type     = "t2.micro"
-bucket_prefix     = "my-project"
-allowed_ssh_cidr  = "YOUR_IP/32"  # Replace with your IP
+instance_type     = "t3.micro"  # Free tier eligible
+bucket_prefix     = "my-project-unique-name"  # Must be globally unique
+allowed_ssh_cidr  = ["YOUR_IP/32"]  # Replace with your IP
 ```
+
+**Get your IP:** `curl ifconfig.me`
 
 ---
 
@@ -186,16 +229,15 @@ iac-demo/
 ├── provider.tf                  # AWS provider configuration
 ├── variables.tf                 # Variable definitions
 ├── outputs.tf                   # Output values
-├── terraform.tfvars.example     # Example variable values
+├── terraform.tfvars             # Your custom variables
 ├── .gitignore                   # Git ignore rules
-├── test-infrastructure.sh       # Automated test script
 ├── TESTING.md                   # Testing documentation
-├── SECURITY-WORKFLOW.md         # Security documentation
+├── JUNIOR-DEVSECOPS-GUIDE.md    # Beginner-friendly guide
 ├── README.md                    # This file
 ├── .github/
 │   └── workflows/
 │       ├── security-scan.yml    # CI/CD security pipeline
-│       └── test-insecure.yml    # Pipeline blocking test
+│       └── test-blocking.yml    # Pipeline blocking test
 └── modules/                     # Reusable Terraform modules
     ├── vpc/                     # VPC module (NEW!)
     │   ├── main.tf              # VPC, subnets, gateways, flow logs
@@ -415,10 +457,16 @@ After running `terraform apply`, the following resources are created:
 
 - [TESTING.md](TESTING.md) - Comprehensive testing guide
 - [SECURITY-WORKFLOW.md](SECURITY-WORKFLOW.md) - Security implementation details
-- [VPC-EXPLAINED.md](VPC-EXPLAINED.md) - VPC and network security deep dive (NEW)
+## Documentation
+
+- [TESTING.md](TESTING.md) - Comprehensive testing guide
+- [JUNIOR-DEVSECOPS-GUIDE.md](JUNIOR-DEVSECOPS-GUIDE.md) - Beginner-friendly explanation of everything
+- [VPC-EXPLAINED.md](VPC-EXPLAINED.md) - VPC and network security deep dive
+- [IaC-security-workflow.md](IaC-security-workflow.md) - Security implementation details
+- [CI-CD-SECURITY.md](CI-CD-SECURITY.md) - CI/CD pipeline security
 - [Terraform Documentation](https://www.terraform.io/docs)
 - [Checkov Documentation](https://www.checkov.io/)
-- [LocalStack Documentation](https://docs.localstack.cloud/)
+- [AWS Documentation](https://docs.aws.amazon.com/)
 
 ---
 
@@ -428,15 +476,15 @@ After running `terraform apply`, the following resources are created:
 - ✅ Create reusable Terraform modules
 - ✅ Implement module dependencies and composition
 - ✅ Use variables for configuration management
-- ✅ Test infrastructure with automated scripts
 - ✅ Implement security scanning and policy enforcement
 - ✅ Fix security misconfigurations
 - ✅ Automate security in CI/CD pipeline
-- ✅ Implement IAM roles and policies (Week 7)
-- ✅ Create VPC and network security (Week 7)
-- ⏳ Deploy secure cloud infrastructure (Week 7)
-- ⏳ Enable logging and monitoring (Week 7)
-- ⏳ Apply advanced cloud security (Week 7)
+- ✅ Implement IAM roles and policies
+- ✅ Create VPC and network security
+- ✅ Deploy secure cloud infrastructure to AWS
+- ✅ Enable logging and monitoring (CloudWatch & VPC Flow Logs)
+- ✅ Apply advanced cloud security (IMDSv2, encryption, etc.)
+- ✅ Production AWS deployment
 
 ---
 
@@ -457,10 +505,10 @@ After running `terraform apply`, the following resources are created:
 - Variable validation and best practices
 
 **Testing & Validation**
-- Writing automated test scripts
+- Writing test infrastructure scripts
 - Using `terraform validate` and `terraform plan`
 - Verifying state and outputs
-- LocalStack for local infrastructure testing
+- Real AWS deployment and validation
 
 ### Week 6 - IaC Security (COMPLETE)
 
@@ -490,42 +538,48 @@ After running `terraform apply`, the following resources are created:
 - Documentation of security decisions
 - Automation of security checks
 
+### Week 7 - Cloud Security & AWS Production (COMPLETE)
+
+**IAM Implementation**
+- Created IAM role for EC2 instances
+- Implemented instance profile for secure access
+- Configured trust relationships and policies
+- Applied least privilege access principles
+
+**VPC and Network Security**
+- Deployed production VPC with public/private subnets
+- Configured Internet Gateway and NAT Gateway
+- Implemented route tables for proper traffic flow
+- Set up VPC Flow Logs for network monitoring
+- Created CloudWatch Log Group for centralized logging
+
+**AWS Production Deployment**
+- Successfully deployed 25 resources to AWS Free Tier
+- Configured real AWS credentials and region (us-east-1)
+- Used Amazon Linux 2023 AMI (ami-0f00d706c4a80fd93)
+- Deployed t3.micro instance (free tier eligible)
+- Enabled EBS optimization and detailed monitoring
+- Configured cost-effective infrastructure (~$33/month)
+
+**Security Features Enabled**
+- IMDSv2 enforcement on EC2
+- Encryption at rest for all volumes
+- Restricted SSH access to specific IP
+- VPC Flow Logs for network traffic analysis
+- CloudWatch monitoring and logging
+- Security group with minimal required ports
+
 ---
 
 ## Progress Tracking
 
 **Week 5 Status**: COMPLETE (7/7 tasks)  
 **Week 6 Status**: COMPLETE (7/7 tasks)  
-**Week 7 Status**: IN PROGRESS (2/7 tasks)
+**Week 7 Status**: COMPLETE (7/7 tasks)
 
-**Overall Progress**: 16/28 tasks complete (57%)
+**Overall Progress**: 21/28 tasks complete (75%)
 
-Currently working on Week 7 - Cloud Security Basics (using LocalStack)
-
----
-
-## Next Steps (Week 7)
-
-With LocalStack, we'll implement:
-
-1. **IAM Roles and Policies** - Create proper access control
-2. **VPC and Networking** - Implement network isolation
-3. **CloudWatch Logging** - Enable infrastructure monitoring
-4. **Advanced Security Groups** - Multi-tier network security
-5. **Security Hardening** - Additional security controls
-6. **Documentation** - Complete cloud security guide
+Currently working on Week 8 advanced topics.
 
 ---
-
-## Why LocalStack?
-
-**Current Situation**: AWS account signup pending (phone verification issues)
-
-**LocalStack Benefits**:
-- ✅ Complete AWS cloud environment locally
-- ✅ Learn all cloud security concepts
-- ✅ Practice without cost
-- ✅ Same Terraform code works on real AWS
-- ✅ Faster development and testing
-- ✅ No AWS account needed
 

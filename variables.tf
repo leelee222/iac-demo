@@ -19,5 +19,5 @@ variable "bucket_prefix" {
 variable "allowed_ssh_cidr" {
   description = "CIDR blocks allowed to access SSH (port 22). Use your IP address for security."
   type        = list(string)
-  default     = ["10.0.0.0/8"]  # Restricted to private network - update with your IP
+  default     = ["10.0.0.0/8"]
 }

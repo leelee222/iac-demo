@@ -23,7 +23,6 @@ output "iam_role_arn" {
   value = module.iam.role_arn
 }
 
-# VPC Outputs
 output "vpc_id" {
   description = "ID of the VPC"
   value       = module.vpc.vpc_id
