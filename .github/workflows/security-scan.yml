@@ -1,4 +1,4 @@
-name: IaC Security Scan
+name: IaC Security Scan & AWS Deployment
 
 on:
   push:
@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy to AWS (yes/no)'
+        required: true
+        default: 'no'
 
 jobs:
   terraform-security-scan:
@@ -42,15 +47,6 @@ jobs:
           framework: terraform
           output_format: cli
           soft_fail: false
-          # Skip checks that are excessive for demo/learning projects:
-          # CKV_AWS_260: HTTP open to world (acceptable for web servers)
-          # CKV2_AWS_41: IAM role attachment (not needed for demo)
-          # CKV_AWS_145: KMS encryption (default encryption is sufficient for demo)
-          # CKV2_AWS_62: S3 event notifications (not needed for demo)
-          # CKV_AWS_18: S3 access logging (not needed for demo)
-          # CKV2_AWS_61: S3 lifecycle (not needed for demo)
-          # CKV_AWS_144: Cross-region replication (overkill for demo)
-          # CKV2_AWS_5: Security group attachment check (false positive)
           skip_check: CKV_AWS_260,CKV2_AWS_41,CKV_AWS_145,CKV2_AWS_62,CKV_AWS_18,CKV2_AWS_61,CKV_AWS_144,CKV2_AWS_5
 
       - name: Upload Checkov Results
@@ -74,15 +70,89 @@ jobs:
         with:
           terraform_version: 1.6.0
 
+      - name: Configure AWS Credentials
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
       - name: Terraform Init
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan
+        id: plan
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.deploy }}" == "yes" ]]; then
+            terraform plan -out=tfplan
+          else
+            terraform plan
+          fi
         env:
-          AWS_ACCESS_KEY_ID: test
-          AWS_SECRET_ACCESS_KEY: test
+          AWS_ACCESS_KEY_ID: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes' && secrets.AWS_ACCESS_KEY_ID || 'test' }}
+          AWS_SECRET_ACCESS_KEY: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes' && secrets.AWS_SECRET_ACCESS_KEY || 'test' }}
           AWS_DEFAULT_REGION: us-east-1
+
+      - name: Upload Plan
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: tfplan
+
+  terraform-apply:
+    name: Deploy to AWS
+    runs-on: ubuntu-latest
+    needs: terraform-plan
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
+    environment:
+      name: production
+      url: https://console.aws.amazon.com/ec2/v2/home?region=us-east-1
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Download Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+
+      - name: Get Outputs
+        id: outputs
+        run: |
+          echo "instance_id=$(terraform output -raw instance_id)" >> $GITHUB_OUTPUT
+          echo "vpc_id=$(terraform output -raw vpc_id)" >> $GITHUB_OUTPUT
+          echo "bucket_name=$(terraform output -raw bucket_name)" >> $GITHUB_OUTPUT
+
+      - name: Deployment Summary
+        run: |
+          echo "### Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Instance ID**: ${{ steps.outputs.outputs.instance_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "**VPC ID**: ${{ steps.outputs.outputs.vpc_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "**S3 Bucket**: ${{ steps.outputs.outputs.bucket_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[View in AWS Console](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1)" >> $GITHUB_STEP_SUMMARY
 
   summary:
     name: Pipeline Summary
@@ -93,12 +163,16 @@ jobs:
     steps:
       - name: Report Status
         run: |
-          echo "🛡️  Security Scan: ${{ needs.terraform-security-scan.result }}"
-          echo "📋 Terraform Plan: ${{ needs.terraform-plan.result }}"
+          echo "Security Scan: ${{ needs.terraform-security-scan.result }}"
+          echo "Terraform Plan: ${{ needs.terraform-plan.result }}"
           
           if [[ "${{ needs.terraform-security-scan.result }}" == "failure" ]]; then
-            echo "❌ Pipeline BLOCKED due to security issues!"
+            echo "Pipeline BLOCKED due to security issues!"
             exit 1
           fi
           
-          echo "✅ All checks passed!"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.deploy }}" == "yes" ]]; then
+            echo "Deployment triggered - check terraform-apply job"
+          else
+            echo "All checks passed! Ready for deployment"
+          fi

@@ -49,7 +49,7 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 
 ### Week 8 - Cloud Deployment Project
 
-* [ ] Integrate CI/CD pipeline with cloud deployment
+* [x] Integrate CI/CD pipeline with cloud deployment
 * [ ] Automate Terraform apply in pipeline
 * [ ] Add automated security scans (SAST, dependency) in pipeline
 * [ ] Deploy app to cloud via pipeline
@@ -72,36 +72,6 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 * **Region**: us-east-1
 
 **Status**: Deployed to production AWS with full enterprise security features.
-
----
-
-## Production Infrastructure
-
-### Current Deployment (AWS)
-
-**25 Resources Deployed:**
-
-| Component | Resource ID | Status |
-|-----------|------------|--------|
-| **VPC** | `vpc-008c829789c18098b` | ✅ Running |
-| **Public Subnet** | `subnet-0e1696350a3592c7d` | ✅ Active |
-| **Private Subnet** | `subnet-0aeb4f9ba503f916c` | ✅ Active |
-| **EC2 Instance** | `i-000e170aaa531df35` | ✅ Running |
-| **Public IP** | `13.222.96.187` | ✅ Active |
-| **NAT Gateway** | `54.225.29.80` | ✅ Active |
-| **Security Group** | `sg-09e16ad00dfd00582` | ✅ Active |
-| **S3 Bucket** | `iac-demo-leelee222-local-5722280d` | ✅ Active |
-| **VPC Flow Logs** | `/aws/vpc/local-flow-logs` | ✅ Logging |
-| **IAM Role** | `iac-demo-ec2-role` | ✅ Active |
-
-**Instance Details:**
-- AMI: Amazon Linux 2023
-- Type: t3.micro (Free Tier)
-- Public IP: 13.222.96.187
-- Private IP: 10.0.1.235
-- Subnet: Public (10.0.1.0/24)
-
-**Cost**: ~$33/month (NAT Gateway only - all other resources are free tier eligible)
 
 ---
 
@@ -194,18 +164,6 @@ terraform output
 terraform destroy
 ```
 
-### Cost Management
-
-**NAT Gateway** is the only resource that costs money (~$32/month).
-All other resources are free tier eligible.
-
-**To minimize costs:**
-- Use infrastructure for learning (1-2 weeks)
-- Run `terraform destroy` when not in use
-- Redeploy anytime with `terraform apply`
-
----
-
 ### Using Variables
 
 Create a `terraform.tfvars` file to customize:
@@ -270,14 +228,14 @@ This project deploys the following infrastructure:
 
 - Creates isolated network with public and private subnets
 - **Components**:
-  - ✅ VPC with CIDR 10.0.0.0/16 (65,536 IPs)
-  - ✅ Public subnet (10.0.1.0/24) for internet-facing resources
-  - ✅ Private subnet (10.0.2.0/24) for internal resources
-  - ✅ Internet Gateway for public subnet
-  - ✅ NAT Gateway for private subnet outbound access
-  - ✅ Route tables for traffic routing
-  - ✅ Network ACL for subnet-level firewall
-  - ✅ VPC Flow Logs for traffic monitoring
+  - VPC with CIDR 10.0.0.0/16 (65,536 IPs)
+  - Public subnet (10.0.1.0/24) for internet-facing resources
+  - Private subnet (10.0.2.0/24) for internal resources
+  - Internet Gateway for public subnet
+  - NAT Gateway for private subnet outbound access
+  - Route tables for traffic routing
+  - Network ACL for subnet-level firewall
+  - VPC Flow Logs for traffic monitoring
 - **Security Benefits**:
   - Network isolation from other AWS resources
   - Private subnet has no direct internet access
@@ -288,10 +246,10 @@ This project deploys the following infrastructure:
 
 - Creates IAM roles and policies for EC2 instances
 - **Components**:
-  - ✅ IAM role with EC2 trust policy
-  - ✅ CloudWatch Logs policy (write logs only)
-  - ✅ S3 read-only policy (scoped to specific bucket)
-  - ✅ Instance profile for EC2 attachment
+  - IAM role with EC2 trust policy
+  - CloudWatch Logs policy (write logs only)
+  - S3 read-only policy (scoped to specific bucket)
+  - Instance profile for EC2 attachment
 - **Security Principles**:
   - Principle of least privilege
   - No hardcoded credentials
@@ -300,32 +258,32 @@ This project deploys the following infrastructure:
 ### 3. EC2 Instance Module (`modules/ec2/`)
 - Creates a virtual machine with configurable instance type
 - **Security Features**:
-  - ✅ IMDSv2 enforced (prevents SSRF attacks)
-  - ✅ Root volume encryption enabled
-  - ✅ Detailed monitoring enabled
-  - ✅ EBS optimization enabled
-  - ✅ IAM role attached (no credentials needed)
-  - ✅ Deployed in VPC subnet
+  - IMDSv2 enforced (prevents SSRF attacks)
+  - Root volume encryption enabled
+  - Detailed monitoring enabled
+  - EBS optimization enabled
+  - IAM role attached (no credentials needed)
+  - Deployed in VPC subnet
 - Attached to security group for network access control
 - Tagged with customizable names
 
 ### 4. S3 Bucket Module (`modules/s3_bucket/`)
 - Creates object storage with unique random suffix
 - **Security Features**:
-  - ✅ Public access completely blocked
-  - ✅ Versioning enabled for data recovery
-  - ✅ Private by default
+  - Public access completely blocked
+  - Versioning enabled for data recovery
+  - Private by default
 - Environment tagging for resource organization
 - Follows naming best practices
 
 ### 5. Security Group Module (`modules/security_group/`)
 - Defines firewall rules for the EC2 instance
 - **Security Features**:
-  - ✅ SSH restricted to specific IP ranges (not 0.0.0.0/0)
-  - ✅ HTTP open for web traffic (acceptable for web servers)
-  - ✅ Egress limited to HTTP/HTTPS/DNS only
-  - ✅ All rules have descriptions
-  - ✅ Attached to VPC for network isolation
+  - SSH restricted to specific IP ranges (not 0.0.0.0/0)
+  - HTTP open for web traffic (acceptable for web servers)
+  - Egress limited to HTTP/HTTPS/DNS only
+  - All rules have descriptions
+  - Attached to VPC for network isolation
 - Configurable allowed IP ranges
 
 ### Module Dependencies
@@ -351,13 +309,13 @@ bash test-infrastructure.sh
 ```
 
 This runs 22 automated tests covering:
-- ✅ Configuration validation
-- ✅ File structure verification
-- ✅ Module organization
-- ✅ State verification
-- ✅ Output validation
-- ✅ Variable definitions
-- ✅ Module dependencies
+- Configuration validation
+- File structure verification
+- Module organization
+- State verification
+- Output validation
+- Variable definitions
+- Module dependencies
 
 ### Security Scanning
 ```bash
@@ -365,8 +323,8 @@ This runs 22 automated tests covering:
 checkov -d . --compact
 
 # Current results:
-# ✅ 14 checks passed
-# ❌ 0 checks failed
+# 14 checks passed
+# 0 checks failed
 # Success rate: 100%
 ```
 
@@ -458,6 +416,7 @@ After running `terraform apply`, the following resources are created:
 - [SECURITY-WORKFLOW.md](SECURITY-WORKFLOW.md) - Security implementation details
 ## Documentation
 
+- [CI-CD-DEPLOYMENT.md](CI-CD-DEPLOYMENT.md) - Complete CI/CD pipeline integration with AWS deployment
 - [CLOUD-SECURITY-SETUP.md](CLOUD-SECURITY-SETUP.md) - Complete cloud security architecture documentation
 - [TESTING.md](TESTING.md) - Comprehensive testing guide
 - [JUNIOR-DEVSECOPS-GUIDE.md](JUNIOR-DEVSECOPS-GUIDE.md) - Beginner-friendly explanation of everything
