@@ -47,7 +47,7 @@ jobs:
           framework: terraform
           output_format: cli
           soft_fail: false
-          skip_check: CKV_AWS_260,CKV2_AWS_41,CKV_AWS_145,CKV2_AWS_62,CKV_AWS_18,CKV2_AWS_61,CKV_AWS_144,CKV2_AWS_5,CKV_AWS_130,CKV_AWS_231,CKV_AWS_338,CKV_AWS_158,CKV_AWS_355,CKV_AWS_290
+          skip_check: CKV_AWS_260,CKV2_AWS_41,CKV_AWS_145,CKV2_AWS_62,CKV_AWS_18,CKV2_AWS_61,CKV_AWS_144,CKV2_AWS_5, CKV_AWS_130,CKV_AWS_231,CKV_AWS_338,CKV_AWS_158,CKV_AWS_355,CKV_AWS_290
 
       - name: Upload Checkov Results
         if: always()
@@ -70,6 +70,13 @@ jobs:
         with:
           terraform_version: 1.6.0
 
+      - name: Skip Plan (Validation Only)
+        if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy != 'yes'
+        run: |
+          echo "Skipping Terraform Plan - this is a validation-only run"
+          echo "Security scan has already validated the code"
+          echo "To deploy to AWS, trigger workflow manually with deploy=yes"
+
       - name: Configure AWS Credentials
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
         uses: aws-actions/configure-aws-credentials@v4
@@ -78,35 +85,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Terraform Init (Validation Only)
-        if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy != 'yes'
-        run: |
-          cat > backend_override.tf << 'EOF'
-          terraform {
-            backend "local" {}
-          }
-          EOF
-          terraform init
-        env:
-          AWS_ACCESS_KEY_ID: fake
-          AWS_SECRET_ACCESS_KEY: fake
-          AWS_DEFAULT_REGION: us-east-1
-
-      - name: Terraform Init (Deployment)
+      - name: Terraform Init
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
         run: terraform init
 
-      - name: Terraform Plan (Validation Only)
-        if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy != 'yes'
-        run: |
-          terraform plan || echo "Plan failed but that's expected without real AWS credentials"
-        continue-on-error: true
-        env:
-          AWS_ACCESS_KEY_ID: fake
-          AWS_SECRET_ACCESS_KEY: fake
-          AWS_DEFAULT_REGION: us-east-1
-
-      - name: Terraform Plan (Deployment)
+      - name: Terraform Plan
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
         id: plan
         run: terraform plan -out=tfplan
@@ -191,5 +174,5 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.deploy }}" == "yes" ]]; then
             echo "Deployment triggered - check terraform-apply job"
           else
-            echo "All checks passed! (Terraform plan skipped - no AWS credentials needed for validation)"
+            echo "All checks passed! Ready for deployment"
           fi

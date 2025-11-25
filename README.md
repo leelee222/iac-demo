@@ -3,7 +3,7 @@
 A hands-on project to learn Infrastructure as Code and Cloud Security using Terraform, security scanning tools, and AWS cloud deployments.
 This repository is part of my 3-Month DevSecOps Journey - Month 2.
 
-**Status**: ✅ **DEPLOYED TO PRODUCTION AWS** - Full infrastructure running in real AWS with enterprise-grade security.
+**Status**: **DEPLOYED TO PRODUCTION AWS** - Full infrastructure running in real AWS.
 
 ---
 
@@ -50,7 +50,7 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 ### Week 8 - Cloud Deployment Project
 
 * [x] Integrate CI/CD pipeline with cloud deployment
-* [ ] Automate Terraform apply in pipeline
+* [x] Automate Terraform apply in pipeline
 * [ ] Add automated security scans (SAST, dependency) in pipeline
 * [ ] Deploy app to cloud via pipeline
 * [ ] Test security failures and pipeline blocking
@@ -80,33 +80,33 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 This project follows IaC security best practices:
 
 ### Infrastructure Security
-- ✅ All storage buckets are private by default
-- ✅ S3 public access blocked
-- ✅ S3 versioning enabled
-- ✅ IAM roles follow principle of least privilege
-- ✅ Security groups restrict access to necessary ports only
-- ✅ SSH access restricted to specific IP (41.85.163.81/32)
-- ✅ Encryption enabled for storage (EBS encryption)
-- ✅ IMDSv2 enforced on EC2 instances
-- ✅ VPC network isolation (public/private subnets)
-- ✅ NAT Gateway for private subnet outbound access
-- ✅ Network ACLs for subnet-level firewall
-- ✅ VPC Flow Logs for traffic monitoring
+- All storage buckets are private by default
+- S3 public access blocked
+- S3 versioning enabled
+- IAM roles follow principle of least privilege
+- Security groups restrict access to necessary ports only
+- SSH access restricted to specific IP (41.85.163.81/32)
+- Encryption enabled for storage (EBS encryption)
+- IMDSv2 enforced on EC2 instances
+- VPC network isolation (public/private subnets)
+- NAT Gateway for private subnet outbound access
+- Network ACLs for subnet-level firewall
+- VPC Flow Logs for traffic monitoring
 
 ### Code Security
-- ✅ IaC scripts scanned with **Checkov** for misconfigurations
-- ✅ Automated scanning in CI/CD pipeline
-- ✅ Pipeline fails on critical security issues
-- ✅ 100% security scan pass rate
+- IaC scripts scanned with **Checkov** for misconfigurations
+- Automated scanning in CI/CD pipeline
+- Pipeline fails on critical security issues
+- 100% security scan pass rate
 
 ### Cloud Security
-- ✅ VPC network isolation (public/private subnets)
-- ✅ IAM roles and policies (least privilege)
-- ✅ VPC Flow Logs enabled (CloudWatch)
-- ✅ Network ACLs (subnet-level firewall)
-- ✅ NAT Gateway for secure private subnet access
-- ✅ CloudWatch logging enabled
-- ✅ Production AWS deployment complete
+- VPC network isolation (public/private subnets)
+- IAM roles and policies (least privilege)
+- VPC Flow Logs enabled (CloudWatch)
+- Network ACLs (subnet-level firewall)
+- NAT Gateway for secure private subnet access
+- CloudWatch logging enabled
+- Production AWS deployment complete
 
 ---
 
@@ -377,11 +377,11 @@ After running `terraform apply`, the following resources are created:
 ### Week 6 Achievements (COMPLETE)
 
 #### Security Scanning
-- ✅ Checkov v3.2.490 installed and configured
-- ✅ 8 initial vulnerabilities identified
-- ✅ 100% of security issues fixed
-- ✅ Automated CI/CD security pipeline
-- ✅ Pipeline blocks insecure deployments
+- Checkov v3.2.490 installed and configured
+- 8 initial vulnerabilities identified
+- 100% of security issues fixed
+- Automated CI/CD security pipeline
+- Pipeline blocks insecure deployments
 
 #### Security Hardening Applied
 1. **EC2 Security**:
@@ -431,19 +431,19 @@ After running `terraform apply`, the following resources are created:
 
 ## Learning Goals
 
-- ✅ Master Infrastructure as Code with Terraform
-- ✅ Create reusable Terraform modules
-- ✅ Implement module dependencies and composition
-- ✅ Use variables for configuration management
-- ✅ Implement security scanning and policy enforcement
-- ✅ Fix security misconfigurations
-- ✅ Automate security in CI/CD pipeline
-- ✅ Implement IAM roles and policies
-- ✅ Create VPC and network security
-- ✅ Deploy secure cloud infrastructure to AWS
-- ✅ Enable logging and monitoring (CloudWatch & VPC Flow Logs)
-- ✅ Apply advanced cloud security (IMDSv2, encryption, etc.)
-- ✅ Production AWS deployment
+- Master Infrastructure as Code with Terraform
+- Create reusable Terraform modules
+- Implement module dependencies and composition
+- Use variables for configuration management
+- Implement security scanning and policy enforcement
+- Fix security misconfigurations
+- Automate security in CI/CD pipeline
+- Implement IAM roles and policies
+- Create VPC and network security
+- Deploy secure cloud infrastructure to AWS
+- Enable logging and monitoring (CloudWatch & VPC Flow Logs)
+- Apply advanced cloud security (IMDSv2, encryption, etc.)
+- Production AWS deployment
 
 ---
 
