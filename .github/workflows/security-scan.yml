@@ -150,14 +150,32 @@ jobs:
       - name: Terraform Plan
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
         id: plan
-        run: terraform plan -out=tfplan
+        run: |
+          terraform plan -out=tfplan
+          terraform show -json tfplan > plan.json
+
+      - name: Validate Plan - Block Instance Type Changes
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
+        run: |
+          # Check if plan contains instance type changes
+          if jq -e '.resource_changes[] | select(.address == "module.ec2_instance.aws_instance.vm") | select(.change.actions | contains(["update"])) | select(.change.before.instance_type != .change.after.instance_type)' plan.json > /dev/null 2>&1; then
+            echo "ERROR: Plan contains EC2 instance type change!"
+            echo "This is not allowed in AWS Free Tier"
+            jq -r '.resource_changes[] | select(.address == "module.ec2_instance.aws_instance.vm") | "Current: \(.change.before.instance_type) -> Planned: \(.change.after.instance_type)"' plan.json
+            echo ""
+            echo "Please fix the Terraform state to match AWS reality (t3.micro)"
+            exit 1
+          fi
+          echo "✓ Plan validation passed - no instance type changes"
 
       - name: Upload Plan
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
         uses: actions/upload-artifact@v4
         with:
           name: tfplan-${{ github.run_id }}
-          path: tfplan
+          path: |
+            tfplan
+            plan.json
           retention-days: 1
 
   terraform-apply:
