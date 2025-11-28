@@ -51,7 +51,7 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 
 * [x] Integrate CI/CD pipeline with cloud deployment
 * [x] Automate Terraform apply in pipeline
-* [ ] Add automated security scans (SAST, dependency) in pipeline
+* [x] Add automated security scans (SAST, dependency) in pipeline
 * [ ] Deploy app to cloud via pipeline
 * [ ] Test security failures and pipeline blocking
 * [ ] Push final cloud deployment to GitHub
@@ -63,12 +63,12 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 
 * **IaC Tool**: Terraform v5.100.0
 * **Provider**: AWS (Production Deployment)
-* **Cloud Platform**: Amazon Web Services (AWS Free Tier + Credits)
+* **Cloud Platform**: Amazon Web Services
 * **Security Tools**: Checkov v3.2.490
 * **CI/CD**: GitHub Actions
 * **Modules**: Custom modules for EC2, S3, Security Groups, IAM, VPC
 * **Logging & Monitoring**: CloudWatch Logs & VPC Flow Logs
-* **Instance Type**: t3.micro (Free Tier Eligible)
+* **Instance Type**: t3.micro
 * **Region**: us-east-1
 
 **Status**: Deployed to production AWS with full enterprise security features.
