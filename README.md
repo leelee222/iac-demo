@@ -63,7 +63,7 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 ## Tech Stack
 
 * **IaC Tool**: Terraform v5.100.0
-* **Provider**: AWS (Production Deployment)
+* **Provider**: AWS
 * **Cloud Platform**: Amazon Web Services
 * **Security Tools**: Checkov v3.2.490
 * **CI/CD**: GitHub Actions

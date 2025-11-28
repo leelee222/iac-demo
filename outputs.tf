@@ -8,6 +8,16 @@ output "instance_id" {
   value       = module.ec2_instance.instance_id
 }
 
+output "application_url" {
+  description = "URL to access the deployed application"
+  value       = "http://${module.ec2_instance.public_ip}"
+}
+
+output "public_ip" {
+  description = "Public IP address of the EC2 instance"
+  value       = module.ec2_instance.public_ip
+}
+
 output "security_group_id" {
   description = "ID of the security group"
   value       = module.security_group.sg_id

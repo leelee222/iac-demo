@@ -166,7 +166,7 @@ jobs:
             echo "Please fix the Terraform state to match AWS reality (t3.micro)"
             exit 1
           fi
-          echo "✓ Plan validation passed - no instance type changes"
+          echo "Plan validation passed - no instance type changes"
 
       - name: Upload Plan
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'yes'
@@ -223,16 +223,27 @@ jobs:
           echo "instance_id=$(terraform output -raw instance_id)" >> $GITHUB_OUTPUT
           echo "vpc_id=$(terraform output -raw vpc_id)" >> $GITHUB_OUTPUT
           echo "bucket_name=$(terraform output -raw bucket_name)" >> $GITHUB_OUTPUT
+          echo "app_url=$(terraform output -raw application_url)" >> $GITHUB_OUTPUT
+          echo "public_ip=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
 
       - name: Deployment Summary
         run: |
-          echo "### Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "### 🚀 Deployment Successful!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Instance ID**: ${{ steps.outputs.instance_id }}" >> $GITHUB_STEP_SUMMARY
-          echo "**VPC ID**: ${{ steps.outputs.vpc_id }}" >> $GITHUB_STEP_SUMMARY
-          echo "**S3 Bucket**: ${{ steps.outputs.bucket_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Application Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "🌐 **Application URL**: [${{ steps.outputs.app_url }}](${{ steps.outputs.app_url }})" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "[View in AWS Console](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1)" >> $GITHUB_STEP_SUMMARY
+          echo "⏳ *Note: Application may take 2-3 minutes to fully start after deployment*" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Infrastructure Details" >> $GITHUB_STEP_SUMMARY
+          echo "- **Instance ID**: ${{ steps.outputs.instance_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Public IP**: ${{ steps.outputs.public_ip }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **VPC ID**: ${{ steps.outputs.vpc_id }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **S3 Bucket**: ${{ steps.outputs.bucket_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Quick Links" >> $GITHUB_STEP_SUMMARY
+          echo "- [AWS EC2 Console](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Instances:instanceId=${{ steps.outputs.instance_id }})" >> $GITHUB_STEP_SUMMARY
+          echo "- [VPC Console](https://console.aws.amazon.com/vpc/home?region=us-east-1#vpcs:VpcId=${{ steps.outputs.vpc_id }})" >> $GITHUB_STEP_SUMMARY
 
   summary:
     name: Pipeline Summary
