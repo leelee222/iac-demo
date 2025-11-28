@@ -217,23 +217,26 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
+      - name: Wait for state update
+        run: sleep 5
+
       - name: Get Outputs
         id: outputs
         run: |
-          echo "instance_id=$(terraform output -raw instance_id)" >> $GITHUB_OUTPUT
-          echo "vpc_id=$(terraform output -raw vpc_id)" >> $GITHUB_OUTPUT
-          echo "bucket_name=$(terraform output -raw bucket_name)" >> $GITHUB_OUTPUT
-          echo "app_url=$(terraform output -raw application_url)" >> $GITHUB_OUTPUT
-          echo "public_ip=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
+          echo "instance_id=$(terraform output -raw instance_id 2>/dev/null || echo 'N/A')" >> $GITHUB_OUTPUT
+          echo "vpc_id=$(terraform output -raw vpc_id 2>/dev/null || echo 'N/A')" >> $GITHUB_OUTPUT
+          echo "bucket_name=$(terraform output -raw bucket_name 2>/dev/null || echo 'N/A')" >> $GITHUB_OUTPUT
+          echo "app_url=$(terraform output -raw application_url 2>/dev/null || echo 'N/A')" >> $GITHUB_OUTPUT
+          echo "public_ip=$(terraform output -raw public_ip 2>/dev/null || echo 'N/A')" >> $GITHUB_OUTPUT
 
       - name: Deployment Summary
         run: |
-          echo "### 🚀 Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "### Deployment Successful" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Application Deployed" >> $GITHUB_STEP_SUMMARY
-          echo "🌐 **Application URL**: [${{ steps.outputs.app_url }}](${{ steps.outputs.app_url }})" >> $GITHUB_STEP_SUMMARY
+          echo "**Application URL**: [${{ steps.outputs.app_url }}](${{ steps.outputs.app_url }})" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "⏳ *Note: Application may take 2-3 minutes to fully start after deployment*" >> $GITHUB_STEP_SUMMARY
+          echo "*Note: Application may take 2-3 minutes to fully start after deployment*" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Infrastructure Details" >> $GITHUB_STEP_SUMMARY
           echo "- **Instance ID**: ${{ steps.outputs.instance_id }}" >> $GITHUB_STEP_SUMMARY

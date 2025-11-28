@@ -53,7 +53,7 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 * [x] Automate Terraform apply in pipeline
 * [x] Add automated security scans (SAST, dependency) in pipeline
 * [x] Set up remote state backend (S3 + state locking)
-* [ ] Deploy app to cloud via pipeline
+* [x] Deploy app to cloud via pipeline
 * [ ] Test security failures and pipeline blocking
 * [ ] Push final cloud deployment to GitHub
 * [ ] Document full cloud deployment workflow
