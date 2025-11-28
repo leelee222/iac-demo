@@ -193,6 +193,9 @@ jobs:
         with:
           name: tfplan-${{ github.run_id }}
 
+      - name: Show Plan
+        run: terraform show tfplan
+
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
 
