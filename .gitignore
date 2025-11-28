@@ -39,3 +39,4 @@ Thumbs.db
 
 JUNIOR-DEVSECOPS-GUIDE.md
 CI-CD-DEPLOYMENT.md
+terraform.tfstate.backup
