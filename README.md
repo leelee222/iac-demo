@@ -54,9 +54,9 @@ This repository is part of my 3-Month DevSecOps Journey - Month 2.
 * [x] Add automated security scans (SAST, dependency) in pipeline
 * [x] Set up remote state backend (S3 + state locking)
 * [x] Deploy app to cloud via pipeline
-* [ ] Test security failures and pipeline blocking
-* [ ] Push final cloud deployment to GitHub
-* [ ] Document full cloud deployment workflow
+* [x] Test security failures and pipeline blocking
+* [x] Push final cloud deployment to GitHub
+* [x] Document full cloud deployment workflow
 
 ---
 
@@ -413,20 +413,12 @@ After running `terraform apply`, the following resources are created:
 
 ## Documentation
 
-- [TESTING.md](TESTING.md) - Comprehensive testing guide
-- [SECURITY-WORKFLOW.md](SECURITY-WORKFLOW.md) - Security implementation details
 ## Documentation
 
-- [CI-CD-DEPLOYMENT.md](CI-CD-DEPLOYMENT.md) - Complete CI/CD pipeline integration with AWS deployment
-- [CLOUD-SECURITY-SETUP.md](CLOUD-SECURITY-SETUP.md) - Complete cloud security architecture documentation
-- [TESTING.md](TESTING.md) - Comprehensive testing guide
-- [JUNIOR-DEVSECOPS-GUIDE.md](JUNIOR-DEVSECOPS-GUIDE.md) - Beginner-friendly explanation of everything
-- [VPC-EXPLAINED.md](VPC-EXPLAINED.md) - VPC and network security deep dive
-- [IaC-security-workflow.md](IaC-security-workflow.md) - Security implementation details
-- [CI-CD-SECURITY.md](CI-CD-SECURITY.md) - CI/CD pipeline security
-- [Terraform Documentation](https://www.terraform.io/docs)
-- [Checkov Documentation](https://www.checkov.io/)
-- [AWS Documentation](https://docs.aws.amazon.com/)
+- **[DEPLOYMENT-GUIDE.md](DEPLOYMENT-GUIDE.md)** - Complete step-by-step deployment guide
+- **[CLOUD-SECURITY-SETUP.md](CLOUD-SECURITY-SETUP.md)** - Cloud security architecture
+
+Additional resources: [Terraform](https://www.terraform.io/docs) | [Checkov](https://www.checkov.io/) | [AWS](https://docs.aws.amazon.com/)
 
 ---
 
@@ -529,17 +521,51 @@ After running `terraform apply`, the following resources are created:
 - CloudWatch monitoring and logging
 - Security group with minimal required ports
 
+### Week 8 - Cloud Deployment Project (COMPLETE)
+
+**CI/CD Pipeline Integration**
+- Integrated Terraform with GitHub Actions
+- Implemented automated security scanning (SAST, dependency, IaC)
+- Created manual deployment workflow with approval gates
+- Set up remote state management in S3
+- Added plan validation to prevent unsafe deployments
+
+**Application Deployment**
+- Deployed web application via EC2 user-data
+- Configured Apache web server with custom landing page
+- Automated application deployment through pipeline
+- Created deployment summary with clickable URLs
+
+**Advanced Security Scanning**
+- Integrated Semgrep for SAST analysis
+- Added Trivy for dependency scanning
+- Configured Checkov for IaC security validation
+- Implemented pipeline blocking on security failures
+
+**State Management**
+- Migrated from local to S3 remote backend
+- Configured state encryption and versioning
+- Resolved state drift and synchronization issues
+- Created backend bootstrap script
+
+**Documentation**
+- Created comprehensive deployment guide
+- Documented full CI/CD workflow
+- Wrote troubleshooting procedures
+- Provided step-by-step setup instructions
+
 ---
 
 ## Progress Tracking
 
 **Week 5 Status**: COMPLETE (7/7 tasks)  
 **Week 6 Status**: COMPLETE (7/7 tasks)  
-**Week 7 Status**: COMPLETE (7/7 tasks)
+**Week 7 Status**: COMPLETE (7/7 tasks)  
+**Week 8 Status**: COMPLETE (8/8 tasks)
 
-**Overall Progress**: 21/28 tasks complete (75%)
+**Overall Progress**: 28/28 tasks complete (100%)
 
-Currently working on Week 8 advanced topics.
+All learning objectives achieved. Project complete.
 
 ---
 

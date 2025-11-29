@@ -37,6 +37,12 @@ terraform.rc
 .DS_Store
 Thumbs.db
 
+# Internal documentation (kept locally only)
 JUNIOR-DEVSECOPS-GUIDE.md
 CI-CD-DEPLOYMENT.md
-terraform.tfstate.backup
+TESTING.md
+VPC-EXPLAINED.md
+IaC-security-workflow.md
+CI-CD-SECURITY.md
+SECURITY-SCAN-RESULTS.md
+test-infrastructure.sh
