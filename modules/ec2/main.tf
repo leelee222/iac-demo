@@ -115,12 +115,8 @@ resource "aws_instance" "vm" {
               </head>
               <body>
                   <div class="container">
-                      <h1>IaC Demo Application</h1>
+                      <h1>IaC Demo</h1>
                       <span class="badge">DEPLOYED VIA CI/CD PIPELINE</span>
-                      
-                      <p style="color: #6b7280; margin-bottom: 30px;">
-                          This application was automatically deployed to AWS using Terraform and GitHub Actions.
-                      </p>
                       
                       <div class="info-grid">
                           <div class="info-card">
